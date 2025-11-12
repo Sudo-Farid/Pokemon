@@ -35,18 +35,28 @@ function includeHTML() {
 // Name (Groß geschrieben!) - Erledigt 
 // Typ/en  - Erledigt 
 // Bild des Pokemons - Erledigt 
-// Hintergrundfarbe passend zum Typ - wie mache ich das? 
+// Hintergrundfarbe passend zum Typ - wie im Video aus den Tutorials. 
 // ID (optional) - lass ich weg. 
 // Die Karte hat einen Hovereffekt. - Erledigt. 
- 
+
 
 // Es sollen 20 geladen werden, und darunter soll ein load more button sein. 
-const apiUrl = "https://pokeapi.co/api/v2/pokemon?limit=20&offset=0";
+const baseUrl = "https://pokeapi.co/api/v2/pokemon";
 
-async function getPokemon(apiUrl) {
-  let response = await fetch(apiUrl);
+let offset = 0;
+const limit = 20;
+
+async function getPokemon() {
+
+
+  let response = await fetch(`${baseUrl}?limit=${limit}&offset=${offset}`);
+
+  // Prüfen, ob HTTP-Status OK (200–299)
+  if (!response.ok) {
+    throw new Error(`Fehler beim Laden: ${response.status}`);
+  }
   let data = await response.json();
-  console.log(data);
+  // console.log(data);
   displayPokemon(data.results);
   return data;
 }
@@ -70,16 +80,37 @@ async function displayPokemon(pokemons) {
            </div>
          `;
   }
+}
 
-  
+async function loadMore() {
+  document.getElementsByClassName("load-more-button")[0].disabled = true;
+  document.getElementById("load-animation").style.display = "flex";
+  offset += 20;
+
+  await getPokemon();
+  document.getElementById("load-animation").style.display = "none";
+  document.getElementsByClassName("load-more-button")[0].disabled = false;
 
 }
 
-getPokemon(apiUrl);
+getPokemon(); // Initiales Laden der ersten 20 Pokemons
 
 async function getPokemonDetails(url) {
   let response = await fetch(url);
   let data = await response.json();
-  console.log(data);
+  // console.log(data);
   return data;
+}
+
+function searchPokemon() {
+  const searchInput = document.querySelector(".search-input");
+  const searchValue = searchInput.value.toLowerCase();
+
+  if (searchValue.length < 3) {
+    //  console.log("Eingabe muss mindestens 3 Buchstaben lang sein");
+    return;
+  }
+
+  // Hier die Suche implementieren
+  console.log(searchValue);
 }
