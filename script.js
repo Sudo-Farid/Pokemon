@@ -30,6 +30,8 @@ function includeHTML() {
   }
 }
 
+
+
 // Kleine Pokemonkarte (Listenansicht):
 // Werte der kleinen Pokemonkarte: 
 // Name (Groß geschrieben!) - Erledigt 
@@ -71,7 +73,7 @@ async function displayPokemon(pokemons) {
     }
 
     pokemonContainer.innerHTML += `
-           <div class="pokemon-card bgC_${pokemonDetails.types[0].type.name}">
+           <div onclick="openPokemonDetails('${pokemon.name}')" class="pokemon-card bgC_${pokemonDetails.types[0].type.name}">
              <h2>${pokemon.name.toUpperCase()}</h2>
              <img src="${pokemonDetails.sprites.front_default}" class="pokemon-main-image" alt="${pokemon.name}">
              <div class="type-list">
@@ -102,15 +104,143 @@ async function getPokemonDetails(url) {
   return data;
 }
 
+// Such Algorithmus:
+// 1. Die Namen aus der API holen
+// 2. searchValue mit dem Namen vergleichen
+// 3. Wenn es einen Treffer gibt, dann die Pokemons mit dem Namen aus der API holen und anzeigen
+// 4. Wenn es keinen Treffer gibt, dann "Keine Pokemons gefunden" ausgeben
+ 
+
 function searchPokemon() {
   const searchInput = document.querySelector(".search-input");
   const searchValue = searchInput.value.toLowerCase();
 
   if (searchValue.length < 3) {
-    //  console.log("Eingabe muss mindestens 3 Buchstaben lang sein");
+    const pokemonContainer = document.querySelector(".pokemon-container");
+    pokemonContainer.innerHTML = "";
+    getPokemon();
+    return;
+  }
+  if (searchValue.length === 0) {
+    return;
+  }
+  // Hier die Suche implementieren
+ 
+  // dann die Namen mit dem searchValue vergleichen
+  if (!namesLoaded) {
+    
     return;
   }
 
-  // Hier die Suche implementieren
+  let matchedNames = names.filter(name => name.toLowerCase().includes(searchValue));
+  // console.log(matchedNames);
+
+  if (matchedNames.length > 0) {
+    getPokemonByNames(matchedNames)
+  }  else {
+    const pokemonContainer = document.querySelector(".pokemon-container");
+    pokemonContainer.innerHTML = "<h2>Keine Pokemons gefunden</h2>";
+    return;
+  }
+
   console.log(searchValue);
+  // matchedNames = [];
+}
+
+
+const names = [];
+let namesLoaded = false;
+async function getNamesForSearchFunction() {
+
+  let response = await fetch(`${baseUrl}?limit=10000`);
+  let data = await response.json();
+  let pokemons = data.results;
+  for (const pokemon of pokemons) {
+    names.push(pokemon.name);
+  }
+  // console.log(names);
+  namesLoaded = true;
+}
+
+ getNamesForSearchFunction();
+
+ async function getPokemonByNames(names) {
+  let pokemons = [];
+  for (const name of names) {
+  let response = await fetch(`${baseUrl}/${name}`);
+  let data = await response.json();
+    
+  await pokemons.push(data);
+  
+  }
+  displaySearch(pokemons);
+  console.log(pokemons);
+ }
+
+
+ async function displaySearch(pokemons) {
+  const pokemonContainer = document.querySelector(".pokemon-container");
+  pokemonContainer.innerHTML = "";
+  for (const pokemon of pokemons) {
+    // const pokemonDetails = await getPokemonDetails(pokemon.url);
+    let typeContainer = "";
+     for (const typeInfo of pokemon.types) {
+       typeContainer += `<span class="type">${typeInfo.type.name}</span>`;
+     }
+
+    pokemonContainer.innerHTML += `
+           <div onclick="openPokemonDetails('${pokemon.name}')" class="pokemon-card bgC_${pokemon.types[0].type.name}">
+             <h2>${pokemon.name.toUpperCase()}</h2>
+             <img src="${pokemon.sprites.front_default}" class="pokemon-main-image" alt="${pokemon.name}">
+             <div class="type-list">
+               ${typeContainer}
+             </div>
+           </div>
+         `;
+  }
+}
+
+  async function openPokemonDetails(pokemon) {
+    console.log(pokemon);
+    document.getElementById("pokemon-details").style.display = "flex";
+    document.body.style.overflow = "hidden";
+
+    let pokemonDetailsContainer = document.getElementById("top-section");
+     pokemonDetailsContainer.innerHTML = "";
+
+     let pokemonDetails = await fetch(`${baseUrl}/${pokemon}`);
+     let data = await pokemonDetails.json();
+    //  console.log(data);
+
+    let pokemonImage = data.sprites.other.dream_world.front_default;
+    let pokemonName = data.name;
+ 
+    let typeContainer  = "";
+
+    for (const typeInfo of data.types) {
+      typeContainer += `<span class="type">${typeInfo.type.name}</span>`;
+    }
+    
+    pokemonDetailsContainer.innerHTML = `
+
+                <div class="pokemon-details-top-left">
+                    <div class="pokemon-details-name">
+                        <h2>${pokemonName.toUpperCase()}</h2>
+                    </div>
+                    <div class="type-list">
+                          ${typeContainer}
+                    </div>
+                </div>
+                <div class="pokemon-details-image-container">
+                    <img src="${pokemonImage}" class="pokemon-details-image-image" alt="${pokemonName}">
+                </div>
+               
+                
+        `;
+
+ }
+ 
+function closePokemonDetails() {
+  document.getElementById("pokemon-details").style.display = "none";
+  document.body.style.overflow = "auto";
 }
