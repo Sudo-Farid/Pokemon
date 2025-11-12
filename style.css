@@ -90,7 +90,7 @@ footer{
 .pokemon-card{
     width: 280px;
     min-height: 380px;
-    background: linear-gradient(135deg, #2d2d2d 0%, #3a3a3a 100%);
+    /* background: linear-gradient(135deg, #2d2d2d 0%, #3a3a3a 100%); */
     border-radius: 20px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
     padding: 25px;
@@ -156,5 +156,41 @@ footer{
 
 .pokemon-card:hover .pokemon-main-image {
     transform: scale(1.15) rotate(3deg);
+}
+ 
+.type{
+    width: fit-content;
+    background-color: rgb(215, 215, 215) ;
+    color: black;
+    box-shadow: 1px 1px 5px white;
+    padding: 10px 15px;
+    border-radius: 12px;
+    font-weight: bold;
+}
+
+.type-list {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    margin-top: 18px;
+}
+
+.bgC_grass{
+    background-color: #6bc53e;
+}
+
+.bgC_fire{
+    background-color: #ee761f;
+}
+.bgC_water{
+    background-color: #5381eb;
+}
+.bgC_bug{
+    background-color: #acbd13;
+}
+.bgC_normal{
+    background-color: #cbcb95;
 }
  

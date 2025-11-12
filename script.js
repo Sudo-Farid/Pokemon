@@ -30,6 +30,17 @@ function includeHTML() {
   }
 }
 
+// Kleine Pokemonkarte (Listenansicht):
+// Werte der kleinen Pokemonkarte: 
+// Name (Groß geschrieben!) - Erledigt 
+// Typ/en  - Erledigt 
+// Bild des Pokemons - Erledigt 
+// Hintergrundfarbe passend zum Typ - wie mache ich das? 
+// ID (optional) - lass ich weg. 
+// Die Karte hat einen Hovereffekt. - Erledigt. 
+ 
+
+// Es sollen 20 geladen werden, und darunter soll ein load more button sein. 
 const apiUrl = "https://pokeapi.co/api/v2/pokemon?limit=20&offset=0";
 
 async function getPokemon(apiUrl) {
@@ -44,16 +55,24 @@ async function displayPokemon(pokemons) {
   const pokemonContainer = document.querySelector(".pokemon-container");
   for (const pokemon of pokemons) {
     const pokemonDetails = await getPokemonDetails(pokemon.url);
-    
+    let typeContainer = "";
+    for (const typeInfo of pokemonDetails.types) {
+      typeContainer += `<span class="type">${typeInfo.type.name}</span>`;
+    }
+
     pokemonContainer.innerHTML += `
-           <div class="pokemon-card">
-               <h2>${pokemon.name}</h2>
+           <div class="pokemon-card bgC_${pokemonDetails.types[0].type.name}">
+             <h2>${pokemon.name.toUpperCase()}</h2>
              <img src="${pokemonDetails.sprites.front_default}" class="pokemon-main-image" alt="${pokemon.name}">
-            
-             
+             <div class="type-list">
+               ${typeContainer}
+             </div>
            </div>
          `;
   }
+
+  
+
 }
 
 getPokemon(apiUrl);
