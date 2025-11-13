@@ -109,43 +109,48 @@ async function getPokemonDetails(url) {
 // 2. searchValue mit dem Namen vergleichen
 // 3. Wenn es einen Treffer gibt, dann die Pokemons mit dem Namen aus der API holen und anzeigen
 // 4. Wenn es keinen Treffer gibt, dann "Keine Pokemons gefunden" ausgeben
- 
 
+let searchActive = false;
 function searchPokemon() {
   const searchInput = document.querySelector(".search-input");
-  const searchValue = searchInput.value.toLowerCase();
+  const searchValue = searchInput.value.toLowerCase().trim();
+  const pokemonContainer = document.querySelector(".pokemon-container");
 
-  if (searchValue.length < 3) {
-    const pokemonContainer = document.querySelector(".pokemon-container");
+  
+  if (searchValue.length === 0) {
+    searchActive = false;           
     pokemonContainer.innerHTML = "";
     getPokemon();
     return;
   }
-  if (searchValue.length === 0) {
-    return;
+
+  
+  if (searchValue.length < 3) {
+    if (searchActive) {
+      searchActive = false;
+      pokemonContainer.innerHTML = "";
+      getPokemon();  
+    }
+    return;  
   }
-  // Hier die Suche implementieren
- 
-  // dann die Namen mit dem searchValue vergleichen
+  searchActive = true;
+
   if (!namesLoaded) {
-    
     return;
   }
 
-  let matchedNames = names.filter(name => name.toLowerCase().includes(searchValue));
-  // console.log(matchedNames);
+  // Ab hier: Suche
+  let matchedNames = names.filter(name =>
+    name.toLowerCase().includes(searchValue)
+  );
 
   if (matchedNames.length > 0) {
-    getPokemonByNames(matchedNames)
-  }  else {
-    const pokemonContainer = document.querySelector(".pokemon-container");
+    getPokemonByNames(matchedNames);
+  } else {
     pokemonContainer.innerHTML = "<h2>Keine Pokemons gefunden</h2>";
-    return;
   }
-
-  console.log(searchValue);
-  // matchedNames = [];
 }
+
 
 
 const names = [];
@@ -162,31 +167,31 @@ async function getNamesForSearchFunction() {
   namesLoaded = true;
 }
 
- getNamesForSearchFunction();
+getNamesForSearchFunction();
 
- async function getPokemonByNames(names) {
+async function getPokemonByNames(names) {
   let pokemons = [];
   for (const name of names) {
-  let response = await fetch(`${baseUrl}/${name}`);
-  let data = await response.json();
-    
-  await pokemons.push(data);
-  
+    let response = await fetch(`${baseUrl}/${name}`);
+    let data = await response.json();
+
+    await pokemons.push(data);
+
   }
   displaySearch(pokemons);
   console.log(pokemons);
- }
+}
 
 
- async function displaySearch(pokemons) {
+async function displaySearch(pokemons) {
   const pokemonContainer = document.querySelector(".pokemon-container");
   pokemonContainer.innerHTML = "";
   for (const pokemon of pokemons) {
     // const pokemonDetails = await getPokemonDetails(pokemon.url);
     let typeContainer = "";
-     for (const typeInfo of pokemon.types) {
-       typeContainer += `<span class="type">${typeInfo.type.name}</span>`;
-     }
+    for (const typeInfo of pokemon.types) {
+      typeContainer += `<span class="type">${typeInfo.type.name}</span>`;
+    }
 
     pokemonContainer.innerHTML += `
            <div onclick="openPokemonDetails('${pokemon.name}')" class="pokemon-card bgC_${pokemon.types[0].type.name}">
@@ -200,28 +205,29 @@ async function getNamesForSearchFunction() {
   }
 }
 
-  async function openPokemonDetails(pokemon) {
-    console.log(pokemon);
-    document.getElementById("pokemon-details").style.display = "flex";
-    document.body.style.overflow = "hidden";
+async function openPokemonDetails(pokemon) {
+  offset = 0;
+  console.log(pokemon);
+  document.getElementById("pokemon-details").style.display = "flex";
+  document.body.style.overflow = "hidden";
 
-    let pokemonDetailsContainer = document.getElementById("top-section");
-     pokemonDetailsContainer.innerHTML = "";
+  let pokemonDetailsContainer = document.getElementById("top-section");
+  pokemonDetailsContainer.innerHTML = "";
 
-     let pokemonDetails = await fetch(`${baseUrl}/${pokemon}`);
-     let data = await pokemonDetails.json();
-    //  console.log(data);
+  let pokemonDetails = await fetch(`${baseUrl}/${pokemon}`);
+  let data = await pokemonDetails.json();
+  //  console.log(data);
 
-    let pokemonImage = data.sprites.other.dream_world.front_default;
-    let pokemonName = data.name;
- 
-    let typeContainer  = "";
+  let pokemonImage = data.sprites.other.dream_world.front_default;
+  let pokemonName = data.name;
 
-    for (const typeInfo of data.types) {
-      typeContainer += `<span class="type">${typeInfo.type.name}</span>`;
-    }
-    
-    pokemonDetailsContainer.innerHTML = `
+  let typeContainer = "";
+
+  for (const typeInfo of data.types) {
+    typeContainer += `<span class="type">${typeInfo.type.name}</span>`;
+  }
+
+  pokemonDetailsContainer.innerHTML = `
 
                 <div class="pokemon-details-top-left">
                     <div class="pokemon-details-name">
@@ -234,12 +240,10 @@ async function getNamesForSearchFunction() {
                 <div class="pokemon-details-image-container">
                     <img src="${pokemonImage}" class="pokemon-details-image-image" alt="${pokemonName}">
                 </div>
-               
-                
         `;
 
- }
- 
+}
+
 function closePokemonDetails() {
   document.getElementById("pokemon-details").style.display = "none";
   document.body.style.overflow = "auto";
