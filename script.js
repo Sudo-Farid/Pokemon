@@ -72,10 +72,11 @@ async function displayPokemon(pokemons) {
       typeContainer += `<span class="type">${typeInfo.type.name}</span>`;
     }
 
+    let image = pokemonDetails.sprites.other.dream_world.front_default || pokemonDetails.sprites.front_default;
     pokemonContainer.innerHTML += `
            <div onclick="openPokemonDetails('${pokemon.name}')" class="pokemon-card bgC_${pokemonDetails.types[0].type.name}">
              <h2>${pokemon.name.toUpperCase()}</h2>
-             <img src="${pokemonDetails.sprites.front_default}" class="pokemon-main-image" alt="${pokemon.name}">
+             <img src="${image}" class="pokemon-main-image" alt="${pokemon.name}">
              <div class="type-list">
                ${typeContainer}
              </div>
@@ -116,24 +117,29 @@ function searchPokemon() {
   const searchValue = searchInput.value.toLowerCase().trim();
   const pokemonContainer = document.querySelector(".pokemon-container");
 
-  
+
   if (searchValue.length === 0) {
-    searchActive = false;           
+    searchActive = false;
     pokemonContainer.innerHTML = "";
+    offset = 0;
+    document.getElementsByClassName("load-more-button")[0].style.display = "block";
     getPokemon();
     return;
   }
 
-  
+
   if (searchValue.length < 3) {
     if (searchActive) {
       searchActive = false;
       pokemonContainer.innerHTML = "";
-      getPokemon();  
+      offset = 0;
+      getPokemon();
+      document.getElementsByClassName("load-more-button")[0].style.display = "block";
     }
-    return;  
+    return;
   }
   searchActive = true;
+  document.getElementsByClassName("load-more-button")[0].style.display = "none";
 
   if (!namesLoaded) {
     return;
@@ -193,10 +199,11 @@ async function displaySearch(pokemons) {
       typeContainer += `<span class="type">${typeInfo.type.name}</span>`;
     }
 
+    let image = pokemon.sprites.other.dream_world.front_default || pokemon.sprites.front_default;
     pokemonContainer.innerHTML += `
            <div onclick="openPokemonDetails('${pokemon.name}')" class="pokemon-card bgC_${pokemon.types[0].type.name}">
              <h2>${pokemon.name.toUpperCase()}</h2>
-             <img src="${pokemon.sprites.front_default}" class="pokemon-main-image" alt="${pokemon.name}">
+             <img src="${image}" class="pokemon-main-image" alt="${pokemon.name}">
              <div class="type-list">
                ${typeContainer}
              </div>
@@ -206,19 +213,29 @@ async function displaySearch(pokemons) {
 }
 
 async function openPokemonDetails(pokemon) {
+  // event.preventDefault();
+  event.stopPropagation();
+  document.getElementById("load-animation").style.display = "flex";
   offset = 0;
   console.log(pokemon);
   document.getElementById("pokemon-details").style.display = "flex";
   document.body.style.overflow = "hidden";
 
+   document.getElementById("pokemon-details-content").style.display = "flex";
+
   let pokemonDetailsContainer = document.getElementById("top-section");
+  let bottomSectionContainer = document.getElementById("bottom-section");
   pokemonDetailsContainer.innerHTML = "";
+  bottomSectionContainer.innerHTML = "";
+
 
   let pokemonDetails = await fetch(`${baseUrl}/${pokemon}`);
   let data = await pokemonDetails.json();
   //  console.log(data);
 
-  let pokemonImage = data.sprites.other.dream_world.front_default;
+  bottomSectionContainer.innerHTML = generateHTMLforBottomSection(data);
+
+  let pokemonImage = data.sprites.other.dream_world.front_default || data.sprites.front_default;;
   let pokemonName = data.name;
 
   let typeContainer = "";
@@ -230,6 +247,10 @@ async function openPokemonDetails(pokemon) {
   pokemonDetailsContainer.innerHTML = `
 
                 <div class="pokemon-details-top-left">
+
+                <div class="pokemon-id">
+                    <div class="pokemon-id-number">#${data.id}</div>
+                </div>
                     <div class="pokemon-details-name">
                         <h2>${pokemonName.toUpperCase()}</h2>
                     </div>
@@ -242,9 +263,120 @@ async function openPokemonDetails(pokemon) {
                 </div>
         `;
 
+  document.getElementById("load-animation").style.display = "none";
+
 }
 
 function closePokemonDetails() {
   document.getElementById("pokemon-details").style.display = "none";
   document.body.style.overflow = "auto";
 }
+
+function generateHTMLforBottomSection(data) {
+  console.log(data);
+  let height = data.height * 10;
+  let weight = data.weight / 10;
+  let abilities = data.abilities.map(ability => ability.ability.name).join(", ");
+
+  let lastPokemon = names[names.length - 1];
+  const pokemonNameIndex = names.indexOf(data.name);
+  let nextPokemon = names[pokemonNameIndex + 1];
+  let previousPokemon = names[pokemonNameIndex - 1];
+
+
+  if (pokemonNameIndex == 0) {
+    previousPokemon = lastPokemon;
+  }
+  if (pokemonNameIndex == names.length - 1) {
+    nextPokemon = names[0];
+  }
+
+
+
+  console.log(nextPokemon);
+  console.log(previousPokemon);
+  let html = ` <div class="menu">
+                    <button id="btn1" class="selected" data-target="tab1" onclick="displayTab('tab1')">About</button>
+                    <button id="btn2" data-target="tab2" onclick="displayTab('tab2')">2</button>
+                    <button id="btn3" data-target="tab3" onclick="displayTab('tab3')">3</button>
+                    <button id="btn4" data-target="tab4" onclick="displayTab('tab4')">4</button>
+                </div>
+
+                <div class="tabs">
+
+                    <div id="tab1" class="tab active">
+                        <div id="about-section" class="about-section">
+                            <div class="about-section-content">
+                            <label for="species">Species</label>
+                            <div id="species">${data.species.name.toUpperCase()}</div>
+                            </div>
+                            <div class="about-section-content">
+                              <label for="height">Height</label>
+                              <div id="height">${height} cm</div>
+                              </div>
+                              <div class="about-section-content">
+                                <label for="weight">Weight</label>
+                                <div id="weight">${weight} kg</div>
+                              </div>
+                              <div class="about-section-content">
+                                <label for="abilities">Abilities</label>
+                                <div id="abilities">${abilities}</div>
+                              </div>
+                            
+                        </div>
+                    </div>
+
+                    <div id="tab2" class="tab">Inhalt 2</div>
+                    <div id="tab3" class="tab">Inhalt 3</div>
+                    <div id="tab4" class="tab">Inhalt 4</div>
+                </div>
+                
+                  <div class="bottom-section-controll-buttons">
+                     <img src="assets/images/left-arrow.png" alt="left-arrow" class="bottom-section-controll-buttons-arrow" onclick="openPokemonDetails('${previousPokemon}')">
+                     <img src="assets/images/right-arrow.png" alt="right-arrow" class="bottom-section-controll-buttons-arrow" onclick="openPokemonDetails('${nextPokemon}')">
+                  </div>
+          `;
+
+  return html;
+}
+
+
+function displayTab(tab) {
+  document.querySelectorAll(".tab").forEach(t =>
+    t.classList.remove("active")
+  );
+  document.getElementById(tab).classList.add("active");
+
+
+  document.querySelectorAll(".menu button").forEach(btn =>
+    btn.classList.remove("selected")
+  );
+  let string = "btn" + tab.replace(/\D/g, "");
+  document.getElementById(string).classList.add("selected");
+
+}
+
+// function previousPokemon() {
+//   console.log("previousPokemon");
+// }
+// function nextPokemon() {
+//   console.log("nextPokemon");
+// }
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener("click", (event) => {
+
+    const overlay = document.getElementById("pokemon-details");
+    const content = document.getElementById("pokemon-details-content");
+
+ 
+    if (!overlay || overlay.style.display === "none") return;
+    if (!content || content.style.display === "none") return;
+     
+    if (overlay === event.target || !content.contains(event.target)) {
+      closePokemonDetails();
+    }
+
+  });
+}); 
