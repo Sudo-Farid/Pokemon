@@ -295,7 +295,7 @@ footer {
   margin-bottom: 20px;
 }
 
-.load-animation-video {
+.load-animation-image {
   width: fit-content;
   height: fit-content;
   object-fit: cover;
@@ -428,6 +428,12 @@ footer {
   border: none;
   border-bottom: 3px solid transparent;
   padding-bottom: 5px;
+  color: black;
+
+  font-size: 18px;
+  font-weight: bold;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+  
 }
 
 .menu button:active {
@@ -459,7 +465,7 @@ footer {
   height: 100%;
   width: 100%;
 }
-.about-section label {
+.bottom-section label {
   font-size: 18px;
   font-weight: bold;
   color: black;
@@ -535,3 +541,6 @@ footer {
   width: 40px;
   text-align: right;
 }
+
+
+ 

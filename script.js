@@ -1,3 +1,4 @@
+let showPokemonDetailsMod = false;
 /**
  * Base URL for the PokeAPI.
  * @constant {string} baseUrl
@@ -180,7 +181,7 @@ async function getPokemonByNames(names) {
   for (const name of names) {
     let response = await fetch(`${baseUrl}/${name}`);
     let data = await response.json();
-    await pokemons.push(data);
+    pokemons.push(data);
   }
   displaySearch(pokemons);
   // console.log(pokemons);
@@ -208,6 +209,7 @@ async function displaySearch(pokemons) {
  * @function openPokemonDetails
  * @param {string} pokemon - The name of the Pokémon to open the details for.
  */
+let currentFocusedPokemon = "";
 async function openPokemonDetails(pokemon) {
   event.stopPropagation();
   document.getElementById("load-animation").style.display = "flex";
@@ -225,6 +227,8 @@ async function openPokemonDetails(pokemon) {
     displayTab(currentTab);
   }
   document.getElementById("load-animation").style.display = "none";
+  showPokemonDetailsMod = true;
+  currentFocusedPokemon = pokemon;
 }
 
 /**
@@ -236,6 +240,7 @@ function closePokemonDetails() {
   document.getElementById("pokemon-details").style.display = "none";
   document.body.style.overflow = "auto";
   currentTab = "";
+  showPokemonDetailsMod = false;
   // document.querySelector(".pokemon-container").innerHTML = "";
   // offset = offset + 20;
   // getPokemon();
@@ -264,7 +269,6 @@ function displayTab(tab) {
 /**
  * Closes the Pokémon details Container and restores the scroll position when the overlay  is clicked.
  *
- * @function closePokemonDetails
  */
 document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("click", (event) => {
@@ -277,7 +281,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
   });
-}); 
+});
 
 /**
  * Handles Escape, left and right arrow keys for the Pokémon details modal.
@@ -285,6 +289,9 @@ document.addEventListener("DOMContentLoaded", () => {
  */
 document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("keydown", (event) => { 
+    if (!showPokemonDetailsMod) {
+      return;
+    }
     if (event.key === "Escape") {
       closePokemonDetails();
     } else if (event.key === "ArrowLeft") {
@@ -294,3 +301,4 @@ document.addEventListener("DOMContentLoaded", () => {
     } 
   });
 });
+ 

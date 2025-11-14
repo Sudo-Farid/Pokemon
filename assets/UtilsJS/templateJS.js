@@ -14,7 +14,7 @@ async function generateHTMLforDisplayPokemon(pokemon) {
   }
   let image = pokemonDetails.sprites.other.dream_world.front_default || pokemonDetails.sprites.front_default;
   let html = `
-           <div onclick="openPokemonDetails('${pokemon.name}')" class="pokemon-card bgC_${pokemonDetails.types[0].type.name}">
+           <div onclick="openPokemonDetails('${pokemon.name}')" class="pokemon-card bgC_${pokemonDetails.types[0].type.name}" data-name="${pokemon.name}">
              <h2>${pokemon.name.toUpperCase()}</h2>
              <img src="${image}" class="pokemon-main-image" alt="${pokemon.name}">
              <div class="type-list">
@@ -40,7 +40,7 @@ async function generateHTMLforDisplaySearch(pokemon) {
   }
   let image = pokemon.sprites.other.dream_world.front_default || pokemon.sprites.front_default;
   let html = `
-           <div onclick="openPokemonDetails('${pokemon.name}')" class="pokemon-card bgC_${pokemon.types[0].type.name}">
+           <div onclick="openPokemonDetails('${pokemon.name}')" class="pokemon-card bgC_${pokemon.types[0].type.name}" data-name="${pokemon.name}">
              <h2>${pokemon.name.toUpperCase()}</h2>
              <img src="${image}" class="pokemon-main-image" alt="${pokemon.name}">
              <div class="type-list">
@@ -130,16 +130,16 @@ function generateHTMLforBottomSection(data ) {
                                   
                           </div>
                           <div class="about-section-content">
-                                  <label for="hp">Attack</label>
-                                  <div id="hp">${attack} / ${maxAttack}   </div>
+                                  <label for="attack">Attack</label>
+                                  <div id="attack" class="stat-value">${attack} / ${maxAttack}   </div>
                                   <div class="stat-bar">
                                         <div class="stat-fill" style="width:${(attack/maxAttack)*100}%"></div>
                                    </div>
                                   
                           </div>
                           <div class="about-section-content">
-                                  <label for="hp">Defense</label>
-                                  <div id="hp">${defense} / ${maxDefense}   </div>
+                                  <label for="defense">Defense</label>
+                                  <div id="defense" class="stat-value">${defense} / ${maxDefense}   </div>
                                   <div class="stat-bar">
                                         <div class="stat-fill" style="width:${(defense/maxDefense)*100}%"></div>
                                    </div>

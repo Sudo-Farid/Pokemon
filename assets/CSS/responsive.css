@@ -20,8 +20,36 @@
     /* height: 200px; */
     /* justify-content: space-around; */
    }
+
+   .pokemon-details-content {
+    width: 400px;
+    height: fit-content;
+   }
   }
 
+  /* ============================================
+   450px
+   ============================================ */
+   @media (max-width: 450px) {
+  
+    * { font-size: 15px; }
+ 
+    .pokemon-details-content {
+     width: 300px;
+     height: fit-content;
+    }
+
+    .stat-value {
+      display: none;
+    }
+    .bottom-section-controll-buttons-arrow{
+        width: 40px;
+        height: 40px;
+    }
+    .pokemon-details-top-left h2 {
+        font-size: 20px;
+    }
+   }
 /* ============================================
    360px
    ============================================ */
