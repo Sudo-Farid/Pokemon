@@ -5,8 +5,8 @@
     <link rel="icon" type="image/png" href="assets/images/logo.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    
+
+
     <script src="assets/UtilsJS/helpers.js"></script>
     <script src="assets/UtilsJS/templateJS.js"></script>
     <script src="script.js"></script>
@@ -17,41 +17,42 @@
 </head>
 
 <body>
- 
-    <div w3-include-html="/includes/header.html"></div>
-    <main class="main">
-        <div class="pokemon-container">
-            <!-- <div class="pokemon-card"></div> -->
-        </div>
-    </main>
-    <div class="load-more-container">
-        <button onclick="loadMore()" class="load-more-button" title="Mehr Pokemons laden"> Load More</button>
-    </div>
-
-    <div id="pokemon-details" class="pokemon-details">
-        <div id="pokemon-details-content" class="pokemon-details-content">
-
-
-            <div id="top-section" class="top-section">
+    <div class="page-container">
+        <div w3-include-html="/includes/header.html"></div>
+        <main class="main">
+            <div class="pokemon-container">
+                <!-- <div class="pokemon-card"></div> -->
             </div>
-            <div id="bottom-section" class="bottom-section">
-            </div>
-
-            <img src="assets/images/x.png" alt="close" class="close-pokemon-details-button"
-                onclick="closePokemonDetails()">
+        </main>
+        <div class="load-more-container">
+            <button onclick="loadMore()" class="load-more-button" title="Mehr Pokemons laden"> Load More</button>
         </div>
-    </div>
 
-    <div class="load-animation" id="load-animation">
-        <video src="assets/loading.webm" class="load-animation-video" autoplay loop muted></video>
-        <div class="load-animation-text">lädt . . . </div>
-    </div>
+        <div id="pokemon-details" class="pokemon-details">
+            <div id="pokemon-details-content" class="pokemon-details-content">
 
-    <div w3-include-html="/includes/footer.html"></div>
+
+                <div id="top-section" class="top-section">
+                </div>
+                <div id="bottom-section" class="bottom-section">
+                </div>
+
+                <img src="assets/images/x.png" alt="close" class="close-pokemon-details-button"
+                    onclick="closePokemonDetails()">
+            </div>
+        </div>
+
+        <div class="load-animation" id="load-animation">
+            <video src="assets/loading.webm" class="load-animation-video" autoplay loop muted></video>
+            <div class="load-animation-text">lädt . . . </div>
+        </div>
+
+        <div w3-include-html="/includes/footer.html"></div>
+    </div>
 </body>
 
 </html>
 
 <script>
-includeHTML();
+    includeHTML();
 </script>

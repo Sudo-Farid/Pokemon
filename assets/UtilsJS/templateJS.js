@@ -58,6 +58,9 @@ async function generateHTMLforDisplaySearch(pokemon) {
  * @param {Object} data - The data of the Pokémon.
  * @returns {string} The HTML for the bottom section of the Pokémon details modal.
  */
+
+let nextPokemon = "";
+let previousPokemon = "";
 function generateHTMLforBottomSection(data ) {
   // console.log(data);
   let height = data.height * 10;
@@ -66,8 +69,8 @@ function generateHTMLforBottomSection(data ) {
 
   let lastPokemon = names[names.length - 1];
   const pokemonNameIndex = names.indexOf(data.name);
-  let nextPokemon = names[pokemonNameIndex + 1];
-  let previousPokemon = names[pokemonNameIndex - 1];
+  nextPokemon = names[pokemonNameIndex + 1];
+  previousPokemon = names[pokemonNameIndex - 1];
 
   let hp = data.stats[0].base_stat;
   let attack = data.stats[1].base_stat;

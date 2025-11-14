@@ -1,0 +1,54 @@
+.page-container {
+  max-width: 1920px;
+  margin: 0 auto;
+}
+
+
+/* ============================================
+   600px
+   ============================================ */
+@media (max-width: 600px) {
+   header {
+     flex-direction: column;
+     height: 200px;
+     justify-content: space-around;
+   }
+   footer {
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+    /* height: 200px; */
+    /* justify-content: space-around; */
+   }
+  }
+
+/* ============================================
+   360px
+   ============================================ */
+@media (max-width: 360px) {
+     .search-container {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+     }
+     
+     .search-input {
+        width: 100%;
+     }
+
+     .pokemon-card {
+        width: 65%;
+      
+     }
+ 
+}
+
+/* ============================================
+   SMALL MOBILE STYLES (bis 480px)
+   ============================================ */
+@media (max-width: 480px) {
+       
+ 
+}
+ 
+ 

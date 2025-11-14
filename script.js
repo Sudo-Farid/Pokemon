@@ -278,3 +278,19 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 }); 
+
+/**
+ * Handles Escape, left and right arrow keys for the Pokémon details modal.
+ *
+ */
+document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener("keydown", (event) => { 
+    if (event.key === "Escape") {
+      closePokemonDetails();
+    } else if (event.key === "ArrowLeft") {
+      openPokemonDetails(previousPokemon);
+    } else if (event.key === "ArrowRight") {
+      openPokemonDetails(nextPokemon);
+    } 
+  });
+});
