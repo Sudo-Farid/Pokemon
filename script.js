@@ -1,19 +1,18 @@
-
-// Kleine Pokemonkarte (Listenansicht):
-// Werte der kleinen Pokemonkarte: 
-// Name (Groß geschrieben!) - Erledigt 
-// Typ/en  - Erledigt 
-// Bild des Pokemons - Erledigt 
-// Hintergrundfarbe passend zum Typ - wie im Video aus den Tutorials. 
-// ID (optional) - lass ich weg. 
-// Die Karte hat einen Hovereffekt. - Erledigt. 
-
-
-// Es sollen 20 geladen werden, und darunter soll ein load more button sein. 
+/**
+ * Base URL for the PokeAPI.
+ * @constant {string} baseUrl
+ */
 const baseUrl = "https://pokeapi.co/api/v2/pokemon";
+/**
+ * Offset for the PokeAPI.
+ * @constant {number} offset
+ */
 let offset = 0;
+/**
+ * Limit for the PokeAPI.
+ * @constant {number} limit
+ */
 const limit = 20;
-
 /**
  * Fetches a list of Pokémon from the PokeAPI based on the current offset and limit,
  * then processes the result and displays them using displayPokemon.
@@ -23,7 +22,6 @@ const limit = 20;
  * @throws {Error} If there is a problem loading the data.
  */
 async function getPokemon() {
-
   let response = await fetch(`${baseUrl}?limit=${limit}&offset=${offset}`);
   // Check if the HTTP status is OK (200–299)
   if (!response.ok) {
@@ -31,7 +29,6 @@ async function getPokemon() {
   }
   let data = await response.json();
   displayPokemon(data.results);
-  // return data;
 }
 
 /**
@@ -88,7 +85,6 @@ async function getPokemonDetails(url) {
 // 3. If there is a match, fetch and display the Pokemons with the matching name from the API
 // 4. If there is no match, display "No Pokemons found"
 
-
 /**
  * Searches for Pokémon based on the search value.
  *
@@ -108,7 +104,7 @@ function searchPokemon() {
   if (!namesLoaded) {
     return;
   }
-  // Ab hier: Suche
+  // Search for the Pokémon by name.
   handlePokemonSearchResults(searchValue, pokemonContainer);
 }
 /**
@@ -132,6 +128,7 @@ function handleShortOrEmptySearch(searchValue, pokemonContainer) {
   }
   return false;
 }
+
 /**
  * This function performs the actual search for the Pokémon by name. The names are stored in the global 'names' variable.
  *
@@ -214,7 +211,7 @@ async function displaySearch(pokemons) {
 async function openPokemonDetails(pokemon) {
   event.stopPropagation();
   document.getElementById("load-animation").style.display = "flex";
-  offset = 0;
+  // offset = 0;
   document.getElementById("pokemon-details").style.display = "flex";
   document.body.style.overflow = "hidden";
   document.getElementById("pokemon-details-content").style.display = "flex";
@@ -222,8 +219,11 @@ async function openPokemonDetails(pokemon) {
   let bottomSectionContainer = document.getElementById("bottom-section");
   let pokemonDetails = await fetch(`${baseUrl}/${pokemon}`);
   let data = await pokemonDetails.json();
-  bottomSectionContainer.innerHTML = generateHTMLforBottomSection(data);
   pokemonDetailsContainer.innerHTML = generateHTMLforTopSection(data);
+  bottomSectionContainer.innerHTML = generateHTMLforBottomSection(data);
+  if (currentTab != "") {
+    displayTab(currentTab);
+  }
   document.getElementById("load-animation").style.display = "none";
 }
 
@@ -235,8 +235,13 @@ async function openPokemonDetails(pokemon) {
 function closePokemonDetails() {
   document.getElementById("pokemon-details").style.display = "none";
   document.body.style.overflow = "auto";
+  currentTab = "";
+  // document.querySelector(".pokemon-container").innerHTML = "";
+  // offset = offset + 20;
+  // getPokemon();
 }
-
+let tabs = ["tab1", "tab2", "tab3", "tab4"];
+let currentTab = "";
 /**
  * Displays the selected tab in the Pokémon details modal.
  *
@@ -253,10 +258,11 @@ function displayTab(tab) {
   );
   let string = "btn" + tab.replace(/\D/g, "");
   document.getElementById(string).classList.add("selected");
+  currentTab = tab;
 }
- 
+
 /**
- * Closes the Pokémon details modal and restores the scroll position when the overlay  is clicked.
+ * Closes the Pokémon details Container and restores the scroll position when the overlay  is clicked.
  *
  * @function closePokemonDetails
  */
@@ -268,6 +274,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!content || content.style.display === "none") return;
     if (overlay === event.target || !content.contains(event.target)) {
       closePokemonDetails();
+
     }
   });
 }); 

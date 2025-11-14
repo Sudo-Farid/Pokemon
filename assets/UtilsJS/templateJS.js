@@ -7,13 +7,13 @@
  * @returns {string} The HTML for the display pokemon card.
  */
 async function generateHTMLforDisplayPokemon(pokemon) {
-    const pokemonDetails = await getPokemonDetails(pokemon.url);
-    let typeContainer = "";
-    for (const typeInfo of pokemonDetails.types) {
-      typeContainer += `<span class="type">${typeInfo.type.name}</span>`;
-    }
-    let image = pokemonDetails.sprites.other.dream_world.front_default || pokemonDetails.sprites.front_default;
-    let html = `
+  const pokemonDetails = await getPokemonDetails(pokemon.url);
+  let typeContainer = "";
+  for (const typeInfo of pokemonDetails.types) {
+    typeContainer += `<span class="type">${typeInfo.type.name}</span>`;
+  }
+  let image = pokemonDetails.sprites.other.dream_world.front_default || pokemonDetails.sprites.front_default;
+  let html = `
            <div onclick="openPokemonDetails('${pokemon.name}')" class="pokemon-card bgC_${pokemonDetails.types[0].type.name}">
              <h2>${pokemon.name.toUpperCase()}</h2>
              <img src="${image}" class="pokemon-main-image" alt="${pokemon.name}">
@@ -22,7 +22,7 @@ async function generateHTMLforDisplayPokemon(pokemon) {
              </div>
            </div>
          `;
-    return html;
+  return html;
 }
 
 /**
@@ -34,12 +34,12 @@ async function generateHTMLforDisplayPokemon(pokemon) {
  * @returns {string} The HTML for the display search pokemon card.
  */
 async function generateHTMLforDisplaySearch(pokemon) {
-    let typeContainer = "";
-    for (const typeInfo of pokemon.types) {
-      typeContainer += `<span class="type">${typeInfo.type.name}</span>`;
-    }
-    let image = pokemon.sprites.other.dream_world.front_default || pokemon.sprites.front_default;
-    let html = `
+  let typeContainer = "";
+  for (const typeInfo of pokemon.types) {
+    typeContainer += `<span class="type">${typeInfo.type.name}</span>`;
+  }
+  let image = pokemon.sprites.other.dream_world.front_default || pokemon.sprites.front_default;
+  let html = `
            <div onclick="openPokemonDetails('${pokemon.name}')" class="pokemon-card bgC_${pokemon.types[0].type.name}">
              <h2>${pokemon.name.toUpperCase()}</h2>
              <img src="${image}" class="pokemon-main-image" alt="${pokemon.name}">
@@ -48,9 +48,9 @@ async function generateHTMLforDisplaySearch(pokemon) {
              </div>
            </div>
          `;
-    return html;
+  return html;
 }
-     
+
 /**
  * Generates the HTML for the bottom section of the Pokémon details modal.
  *
@@ -58,30 +58,38 @@ async function generateHTMLforDisplaySearch(pokemon) {
  * @param {Object} data - The data of the Pokémon.
  * @returns {string} The HTML for the bottom section of the Pokémon details modal.
  */
-function generateHTMLforBottomSection(data) {
-    console.log(data);
-    let height = data.height * 10;
-    let weight = data.weight / 10;
-    let abilities = data.abilities.map(ability => ability.ability.name).join(", ");
-  
-    let lastPokemon = names[names.length - 1];
-    const pokemonNameIndex = names.indexOf(data.name);
-    let nextPokemon = names[pokemonNameIndex + 1];
-    let previousPokemon = names[pokemonNameIndex - 1];
-  
-    if (pokemonNameIndex == 0) {
-      previousPokemon = lastPokemon;
-    }
-    if (pokemonNameIndex == names.length - 1) {
-      nextPokemon = names[0];
-    }
-    // console.log(nextPokemon);
-    // console.log(previousPokemon);
-    let html = ` <div class="menu">
+function generateHTMLforBottomSection(data ) {
+  // console.log(data);
+  let height = data.height * 10;
+  let weight = data.weight / 10;
+  let abilities = data.abilities.map(ability => ability.ability.name).join(", ");
+
+  let lastPokemon = names[names.length - 1];
+  const pokemonNameIndex = names.indexOf(data.name);
+  let nextPokemon = names[pokemonNameIndex + 1];
+  let previousPokemon = names[pokemonNameIndex - 1];
+
+  let hp = data.stats[0].base_stat;
+  let attack = data.stats[1].base_stat;
+  let defense = data.stats[2].base_stat;
+
+  const maxHp = 255;
+  const maxAttack = 190;
+  const maxDefense = 230;
+
+  if (pokemonNameIndex == 0) {
+    previousPokemon = lastPokemon;
+  }
+  if (pokemonNameIndex == names.length - 1) {
+    nextPokemon = names[0];
+  }
+  // console.log(nextPokemon);
+  // console.log(previousPokemon);
+  let html = ` <div class="menu">
                       <button id="btn1" class="selected" data-target="tab1" onclick="displayTab('tab1')">About</button>
-                      <button id="btn2" data-target="tab2" onclick="displayTab('tab2')">2</button>
-                      <button id="btn3" data-target="tab3" onclick="displayTab('tab3')">3</button>
-                      <button id="btn4" data-target="tab4" onclick="displayTab('tab4')">4</button>
+                      <button id="btn2" data-target="tab2" onclick="displayTab('tab2')">Stats</button>
+                    <!--   <button id="btn3" data-target="tab3" onclick="displayTab('tab3')">3</button>
+                      <button id="btn4" data-target="tab4" onclick="displayTab('tab4')">4</button>-->
                   </div>
   
                   <div class="tabs">
@@ -108,9 +116,36 @@ function generateHTMLforBottomSection(data) {
                           </div>
                       </div>
   
-                      <div id="tab2" class="tab">Inhalt 2</div>
-                      <div id="tab3" class="tab">Inhalt 3</div>
-                      <div id="tab4" class="tab">Inhalt 4</div>
+                      <div id="tab2" class="tab">
+                        <div id="stats" class="stats">
+                          <div class="about-section-content">
+                                   <label for="hp">Hit Points</label>
+                                   <div id="hp" class="stat-value">${hp} / ${maxHp}   </div>
+                                   <div class="stat-bar">
+                                        <div class="stat-fill" style="width:${(hp/maxHp)*100}%"></div>
+                                   </div>
+                                  
+                          </div>
+                          <div class="about-section-content">
+                                  <label for="hp">Attack</label>
+                                  <div id="hp">${attack} / ${maxAttack}   </div>
+                                  <div class="stat-bar">
+                                        <div class="stat-fill" style="width:${(attack/maxAttack)*100}%"></div>
+                                   </div>
+                                  
+                          </div>
+                          <div class="about-section-content">
+                                  <label for="hp">Defense</label>
+                                  <div id="hp">${defense} / ${maxDefense}   </div>
+                                  <div class="stat-bar">
+                                        <div class="stat-fill" style="width:${(defense/maxDefense)*100}%"></div>
+                                   </div>
+                                  
+                          </div>
+                        </div>
+                      </div>
+                    <!--  <div id="tab3" class="tab">Inhalt 3</div>
+                      <div id="tab4" class="tab">Inhalt 4</div>-->
                   </div>
                   
                     <div class="bottom-section-controll-buttons">
@@ -118,9 +153,11 @@ function generateHTMLforBottomSection(data) {
                        <img src="assets/images/right-arrow.png" alt="right-arrow" class="bottom-section-controll-buttons-arrow" onclick="openPokemonDetails('${nextPokemon}')">
                     </div>
             `;
-  
+  // if (currentTab != "") {
+  //   displayTab(currentTab);
+  // }
     return html;
-  }
+}
 
 
 
@@ -132,7 +169,7 @@ function generateHTMLforBottomSection(data) {
  * @returns {string} The HTML for the top section of the Pokémon details modal.
  */
 function generateHTMLforTopSection(data) {
-     
+
   let pokemonImage = data.sprites.other.dream_world.front_default || data.sprites.front_default;;
   let pokemonName = data.name;
   let typeContainer = "";
@@ -155,5 +192,5 @@ function generateHTMLforTopSection(data) {
                     <img src="${pokemonImage}" class="pokemon-details-image-image" alt="${pokemonName}">
                 </div>
         `;
-    return html;
+  return html;
 }
