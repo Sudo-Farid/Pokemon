@@ -65,8 +65,10 @@
      }
 
      .pokemon-card {
-        width: 65%;
-      
+        width: 90%;
+     }
+     .pokemon-container {
+        width: 100%;
      }
  
 }

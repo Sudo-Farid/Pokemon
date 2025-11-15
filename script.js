@@ -74,10 +74,18 @@ getPokemon(); // Load the first 20 Pokemons
  * @returns {Object} The details of the Pokémon.
  */
 async function getPokemonDetails(url) {
+  try {
   let response = await fetch(url);
-  let data = await response.json();
-  // console.log(data);
-  return data;
+  if (!response.ok) {
+    throw new Error(`Error fetching ${url}: ${response.status}`);
+  }
+    let data = await response.json();
+    // console.log(data);
+    return data;
+  } catch (error) {
+    console.error(`Error fetching ${url}:`, error);
+    return null;
+  }
 }
 
 // Search Algorithm:
@@ -92,21 +100,28 @@ async function getPokemonDetails(url) {
  * @function searchPokemon
  * @param {string} searchValue - The value to search for.
  */
+let timer;
 let searchActive = false; // Flag to check if the search is active
 function searchPokemon() {
+
   const searchInput = document.querySelector(".search-input");
   const searchValue = searchInput.value.toLowerCase().trim();
   const pokemonContainer = document.querySelector(".pokemon-container");
-  if (handleShortOrEmptySearch(searchValue, pokemonContainer)) {
-    return;
-  }
-  searchActive = true;
-  document.getElementsByClassName("load-more-button")[0].style.display = "none";
-  if (!namesLoaded) {
-    return;
-  }
-  // Search for the Pokémon by name.
-  handlePokemonSearchResults(searchValue, pokemonContainer);
+  clearTimeout(timer);
+  timer = setTimeout(() => {
+    if (handleShortOrEmptySearch(searchValue, pokemonContainer)) {
+      return;
+    }
+    searchActive = true;
+    document.getElementsByClassName("load-more-button")[0].style.display = "none";
+    if (!namesLoaded) {
+      return;
+    }
+    // Search for the Pokémon by name.
+    handlePokemonSearchResults(searchValue, pokemonContainer);
+  }, 500);
+
+
 }
 /**
  * Handles short or empty search values.
@@ -209,9 +224,12 @@ async function displaySearch(pokemons) {
  * @function openPokemonDetails
  * @param {string} pokemon - The name of the Pokémon to open the details for.
  */
-let currentFocusedPokemon = "";
+
 async function openPokemonDetails(pokemon) {
-  event.stopPropagation();
+  if (event) {
+    event.stopPropagation();
+  }
+   
   document.getElementById("load-animation").style.display = "flex";
   // offset = 0;
   document.getElementById("pokemon-details").style.display = "flex";
@@ -228,7 +246,7 @@ async function openPokemonDetails(pokemon) {
   }
   document.getElementById("load-animation").style.display = "none";
   showPokemonDetailsMod = true;
-  currentFocusedPokemon = pokemon;
+  
 }
 
 /**
@@ -289,6 +307,7 @@ document.addEventListener("DOMContentLoaded", () => {
  */
 document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("keydown", (event) => { 
+
     if (!showPokemonDetailsMod) {
       return;
     }

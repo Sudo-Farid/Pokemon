@@ -10,13 +10,13 @@ async function generateHTMLforDisplayPokemon(pokemon) {
   const pokemonDetails = await getPokemonDetails(pokemon.url);
   let typeContainer = "";
   for (const typeInfo of pokemonDetails.types) {
-    typeContainer += `<span class="type">${typeInfo.type.name}</span>`;
+    typeContainer += `<span class="type">${escapeHTML(typeInfo.type.name)}</span>`;
   }
   let image = pokemonDetails.sprites.other.dream_world.front_default || pokemonDetails.sprites.front_default;
   let html = `
-           <div onclick="openPokemonDetails('${pokemon.name}')" class="pokemon-card bgC_${pokemonDetails.types[0].type.name}" data-name="${pokemon.name}">
-             <h2>${pokemon.name.toUpperCase()}</h2>
-             <img src="${image}" class="pokemon-main-image" alt="${pokemon.name}">
+           <div onclick="openPokemonDetails('${escapeHTML(pokemon.name)}')" class="pokemon-card bgC_${escapeHTML(pokemonDetails.types[0].type.name)}" data-name="${escapeHTML(pokemon.name)}">
+             <h2>${escapeHTML(pokemon.name).toUpperCase()}</h2>
+             <img src="${image}" class="pokemon-main-image" alt="${escapeHTML(pokemon.name)}">
              <div class="type-list">
                ${typeContainer}
              </div>
@@ -36,13 +36,13 @@ async function generateHTMLforDisplayPokemon(pokemon) {
 async function generateHTMLforDisplaySearch(pokemon) {
   let typeContainer = "";
   for (const typeInfo of pokemon.types) {
-    typeContainer += `<span class="type">${typeInfo.type.name}</span>`;
+    typeContainer += `<span class="type">${escapeHTML(typeInfo.type.name)}</span>`;
   }
   let image = pokemon.sprites.other.dream_world.front_default || pokemon.sprites.front_default;
   let html = `
-           <div onclick="openPokemonDetails('${pokemon.name}')" class="pokemon-card bgC_${pokemon.types[0].type.name}" data-name="${pokemon.name}">
-             <h2>${pokemon.name.toUpperCase()}</h2>
-             <img src="${image}" class="pokemon-main-image" alt="${pokemon.name}">
+           <div onclick="openPokemonDetails('${escapeHTML(pokemon.name)}')" class="pokemon-card bgC_${escapeHTML(pokemon.types[0].type.name)}" data-name="${escapeHTML(pokemon.name)}">
+             <h2>${escapeHTML(pokemon.name).toUpperCase()}</h2>
+             <img src="${image}" class="pokemon-main-image" alt="${escapeHTML(pokemon.name)}">
              <div class="type-list">
                ${typeContainer}
              </div>
