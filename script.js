@@ -24,12 +24,11 @@ const limit = 20;
  */
 async function getPokemon() {
   let response = await fetch(`${baseUrl}?limit=${limit}&offset=${offset}`);
-  // Check if the HTTP status is OK (200–299)
   if (!response.ok) {
-    throw new Error(`Fehler beim Laden: ${response.status}`);
+    throw new Error(`Failed to fetch Pokémon data. HTTP status: ${response.status}`);
   }
   let data = await response.json();
-  displayPokemon(data.results);
+  displayPokemon(data.results); 
 }
 
 /**
